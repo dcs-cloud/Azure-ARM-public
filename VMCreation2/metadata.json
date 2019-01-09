@@ -1,0 +1,17 @@
+
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  
+  "type": "QuickStart",
+
+  "itemDisplayName": "Deploy a VM",
+
+  "description": "This template allows you to create a Windows/ Linux-based VM in cloud. ",
+
+  "summary": "Deploy a VM",
+
+  "githubUsername": "dcs-cloud",
+
+  "dateUpdated": "2017-10-11"
+
+}
