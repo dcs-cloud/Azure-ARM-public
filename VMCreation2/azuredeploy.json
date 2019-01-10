@@ -4,18 +4,18 @@
     "parameters": {
         
         "ResourceGroupName_of_VNET": {
-            "defaultValue": "itelli-SHAREDHUB-prod-ASE-01-rg",
+            "defaultValue": "",
             "type": "string",
             "metadata": {
                 "description": "Name of the ResourceGroup with the VNET"
             }
         },
         "Region_Code": {
-            "defaultValue": "JPE",
+            "defaultValue": "",
             "type": "String"
         },
         "Service_ShortName": {
-            "defaultValue": "HANA",
+            "defaultValue": "",
             "type": "String"
         },
         "Number_Of_VM": {
@@ -69,11 +69,11 @@
                 ]
         },
         "VirtualNetworkName": {
-            "defaultValue": "itelli-ASE-Management-10.164.32.0_21-vnet",
+            "defaultValue": "",
             "type": "string"
         },
         "subnetName": {
-            "defaultValue": "Management-10.164.33.0_24-subnet",
+            "defaultValue": "",
             "type": "string"
         },
         "networkSecurityGroups_01_name": {
@@ -82,6 +82,7 @@
             "allowedValues": [
                 "DMZ-nsg",
                 "Management-nsg",
+                "Jumphost-nsg",
                 "Appserver-nsg",
                 "Database-nsg",
                 "Backup-nsg",
