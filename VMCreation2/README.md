@@ -6,3 +6,4 @@
 </a>
 
 This template allows you to create a Windows / Linux-based VM </a>.
+Prerequisite : VNET, SUBNETs and NSG are created prior using this ARM template.
