@@ -5,5 +5,6 @@
     <img src="http://armviz.io/visualizebutton.png"/>
 </a>
 
-This template allows you to create a Windows / Linux-based VM. </a>
-Prerequisite : VNET, SUBNETs and NSG are created prior using this ARM template. </a>
+This template allows you to create a Windows / Linux-based VM.
+
+Prerequisite : VNET, SUBNETs and NSG are created prior using this ARM template. 
