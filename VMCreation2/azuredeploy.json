@@ -128,8 +128,11 @@
                     },
                     "osDisk": {
                                          
-                        "createOption": "FromImage"
-                        
+                        "createOption": "FromImage",
+                        "managedDisk": {
+                            "storageAccountType": "Premium_LRS"
+                        },
+                        "diskSizeGB": 64
                     }
                 },
                 "osProfile": {
@@ -178,9 +181,11 @@
                         "version": "latest"
                     },
                     "osDisk": {
-                                         
-                        "createOption": "FromImage"
-                        
+                        "createOption": "FromImage",
+                        "managedDisk": {
+                            "storageAccountType": "Premium_LRS"
+                        },
+                        "diskSizeGB": 64
                     }
                 },
                 "osProfile": {
