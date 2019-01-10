@@ -4,7 +4,7 @@
     "parameters": {
         
         "ResourceGroupName_of_VNET": {
-            "defaultValue": "",
+   
             "type": "string",
             "metadata": {
                 "description": "Name of the ResourceGroup with the VNET"
