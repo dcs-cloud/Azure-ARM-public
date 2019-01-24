@@ -4,7 +4,7 @@
     "parameters": {
         
         "ResourceGroupName_of_VNET": {
-   
+            "defaultValue": "",
             "type": "string",
             "metadata": {
                 "description": "Name of the ResourceGroup with the VNET"
@@ -27,6 +27,11 @@
             "type": "int",
              "metadata": {
             "description": "Enter the starting sequence number of VM to be created"}
+        },
+        "VMAdminID": {
+            "type": "string",
+            "metadata": {
+                "description": "Enter the Admin ID"}
         },
         "VMPassword": {
             "type": "securestring",
@@ -55,18 +60,31 @@
                     "Linux"
                 ]
         },
-         "sku":{
+        "ImageSubscriptionID":{
             "type": "string",
                 "metadata": {
-                    "description": "VM OS Type and Version"
+                    "description": "Enter the subscription ID where your golden image is located"
                 },
-                "defaultValue": "2012-R2-Datacenter",
+                "defaultValue": ""
+        },
+        "ImageDefination":{
+            "type": "string",
+                "metadata": {
+                    "description": "Enter the Image Defination to be used"
+                },
+                "defaultValue": "Win2012R2ImageDefinition",
                 "allowedValues": [
-                    "2012-R2-Datacenter",
-                    "2016-Datacenter",
-                    "11-sp4",
-                    "12-sp4"
+                    "Win2012R2ImageDefinition",
+                    "myWin2016R2ImageDefinition",
+                    "SLES12SP4ImageDefinition"
                 ]
+        },
+        "ImageVersion":{
+            "type": "string",
+                "metadata": {
+                    "description": "Enter the image ID to be used"
+                },
+                "defaultValue": ""
         },
         "VirtualNetworkName": {
             "defaultValue": "",
@@ -75,28 +93,8 @@
         "subnetName": {
             "defaultValue": "",
             "type": "string"
-        },
-        "networkSecurityGroups_01_name": {
-            "defaultValue": "Management-nsg",
-            "type": "string",
-            "allowedValues": [
-                "DMZ-nsg",
-                "Management-nsg",
-                "Jumphost-nsg",
-                "Appserver-nsg",
-                "Database-nsg",
-                "Backup-nsg",
-                "DMZ-DR-nsg",
-                "Management-DR-nsg",
-                "Appserver-DR-nsg",
-                "Database-DR-nsg",
-                "Backup-DR-nsg"
-            ]
-        }
-  
-    },
+        }    },
     "variables": {
-
         "vnetId": "[concat(variables('subID'),'/resourceGroups/',parameters('ResourceGroupName_of_VNET'),'/providers/Microsoft.Network/virtualNetworks/',parameters('VirtualNetworkName'))]",
         "subnetRef": "[concat(variables('vnetId'), '/subnets/', parameters('subnetName'))]",
         "subID": "[subscription().id]",
@@ -107,12 +105,14 @@
             "condition": "[equals(parameters('VMOSType'), 'Windows')]",
             "comments": "Create VirtualMachines",
             "type": "Microsoft.Compute/virtualMachines",
-            "name": "[concat(parameters('Region_Code'),parameters('Service_ShortName'),'vm0', copyIndex(parameters('VMstart')))]",
+            "name": "[concat(parameters('Region_Code'),parameters('Service_ShortName'),'w0', copyIndex(parameters('VMstart')))]",
             "apiVersion": "2018-06-01",
             "location": "[variables('location')]",
             "tags": {
                 "Environment": "dev",
-                "CreatedBy": "bryan.foo@itelligence.com.my"
+                "Release": "[parameters('ImageVersion')]",
+                "Alias": "[concat(parameters('Region_Code'),parameters('Service_ShortName'),'w0', copyIndex(parameters('VMstart')))]",
+                "CreatedBy": ""
             },
             "scale": null,
             "properties": {
@@ -120,30 +120,23 @@
                     "vmSize": "[parameters('VMSize')]"
                 },
                 "storageProfile": {
-                    "imageReference": {
-                        "publisher": "MicrosoftWindowsServer",
-                        "offer": "WindowsServer",
-                        "sku": "[parameters('sku')]",
-                        "version": "latest"
-                    },
                     "osDisk": {
-                                         
                         "createOption": "FromImage",
-                        "managedDisk": {
-                            "storageAccountType": "Premium_LRS"
-                        },
                         "diskSizeGB": 128
+                    },
+                "imageReference": {
+                    "id": "[concat('/subscriptions/',parameters('ImageSubscriptionID'),'/resourceGroups/BryanGalleryRG/providers/Microsoft.Compute/galleries/goldengallery/images/',parameters('ImageDefination'),'/versions/',parameters('ImageVersion'))]"
                     }
                 },
                 "osProfile": {
-                    "computerName": "[concat(parameters('Region_Code'),parameters('Service_ShortName'),'vm0', copyIndex(parameters('VMstart')))]",
-                    "adminUsername": "itadmin",
+                    "computerName": "[concat(parameters('Region_Code'),parameters('Service_ShortName'),'w0', copyIndex(parameters('VMstart')))]",
+                    "adminUsername": "[parameters('VMAdminID')]",
                     "adminPassword": "[parameters('VMPassword')]"    
                 },
                 "networkProfile": {
                     "networkInterfaces": [
                         {
-                            "id": "[resourceId('Microsoft.Network/networkInterfaces', concat(parameters('Region_Code'),parameters('Service_ShortName'),'vm0',copyIndex(parameters('VMstart')),'-nic'))]"
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', concat(parameters('Region_Code'),parameters('Service_ShortName'),'w0',copyIndex(parameters('VMstart')),'-nic'))]"
                         }
                     ]
                 }
@@ -154,19 +147,21 @@
 
             },
             "dependsOn": [
-                "[resourceId('Microsoft.Network/networkInterfaces', concat(parameters('Region_Code'),parameters('Service_ShortName'),'vm0',copyIndex(parameters('VMstart')),'-nic'))]"
+                "[resourceId('Microsoft.Network/networkInterfaces', concat(parameters('Region_Code'),parameters('Service_ShortName'),'w0',copyIndex(parameters('VMstart')),'-nic'))]"
             ]
         },
         {
             "condition": "[equals(parameters('VMOSType'), 'Linux')]",
             "comments": "Create VirtualMachines",
             "type": "Microsoft.Compute/virtualMachines",
-            "name": "[concat(parameters('Region_Code'),parameters('Service_ShortName'),'lvm0', copyIndex(parameters('VMstart')))]",
+            "name": "[concat(parameters('Region_Code'),parameters('Service_ShortName'),'l0', copyIndex(parameters('VMstart')))]",
             "apiVersion": "2018-06-01",
             "location": "[variables('location')]",
             "tags": {
                 "Environment": "dev",
-                "CreatedBy": "bryan.foo@itelligence.com.my"
+                "Release": "[parameters('ImageVersion')]",
+                "Alias": "[concat(parameters('Region_Code'),parameters('Service_ShortName'),'l0', copyIndex(parameters('VMstart')))]",
+                "CreatedBy": ""
             },
             "scale": null,
             "properties": {
@@ -174,29 +169,23 @@
                     "vmSize": "[parameters('VMSize')]"
                 },
                 "storageProfile": {
-                    "imageReference": {
-                        "publisher": "suse",
-                        "offer": "sles",
-                        "sku": "[parameters('sku')]",
-                        "version": "latest"
-                    },
                     "osDisk": {
                         "createOption": "FromImage",
-                        "managedDisk": {
-                            "storageAccountType": "Premium_LRS"
-                        },
                         "diskSizeGB": 64
+                    },
+                "imageReference": {
+                    "id": "[concat('/subscriptions/',parameters('ImageSubscriptionID'),'/resourceGroups/BryanGalleryRG/providers/Microsoft.Compute/galleries/goldengallery/images/',parameters('ImageDefination'),'/versions/',parameters('ImageVersion'))]"
                     }
                 },
                 "osProfile": {
-                    "computerName": "[concat(parameters('Region_Code'),parameters('Service_ShortName'),'lvm0', copyIndex(parameters('VMstart')))]",
-                    "adminUsername": "itadmin",
+                    "computerName": "[concat(parameters('Region_Code'),parameters('Service_ShortName'),'l0', copyIndex(parameters('VMstart')))]",
+                    "adminUsername": "[parameters('VMAdminID')]",
                     "adminPassword": "[parameters('VMPassword')]"    
                 },
                 "networkProfile": {
                     "networkInterfaces": [
                         {
-                            "id": "[resourceId('Microsoft.Network/networkInterfaces', concat(parameters('Region_Code'),parameters('Service_ShortName'),'lvm0',copyIndex(parameters('VMstart')),'-nic'))]"
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', concat(parameters('Region_Code'),parameters('Service_ShortName'),'l0',copyIndex(parameters('VMstart')),'-nic'))]"
                         }
                     ]
                 }
@@ -206,14 +195,14 @@
                 "count": "[parameters('Number_Of_VM')]"
             },
             "dependsOn": [
-                "[resourceId('Microsoft.Network/networkInterfaces', concat(parameters('Region_Code'),parameters('Service_ShortName'),'lvm0',copyIndex(parameters('VMstart')),'-nic'))]"
+                "[resourceId('Microsoft.Network/networkInterfaces', concat(parameters('Region_Code'),parameters('Service_ShortName'),'l0',copyIndex(parameters('VMstart')),'-nic'))]"
             ]
         },
         {
             "condition": "[equals(parameters('VMOSType'), 'Windows')]",
             "comments": " ",
             "type": "Microsoft.Network/networkInterfaces",
-            "name": "[concat(parameters('Region_Code'),parameters('Service_ShortName'),'vm0',copyIndex(parameters('VMstart')),'-nic')]",
+            "name": "[concat(parameters('Region_Code'),parameters('Service_ShortName'),'w0',copyIndex(parameters('VMstart')),'-nic')]",
             "apiVersion": "2018-08-01",
             "location": "[variables('location')]",
             "tags": {},
@@ -225,9 +214,6 @@
                         "properties": {
                             
                             "privateIPAllocationMethod": "Dynamic",
-                            "publicIPAddress": {
-                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', concat(parameters('Region_Code'),parameters('Service_ShortName'),'vm0',copyIndex(parameters('VMstart')),'-pip'))]"
-                            },
                             "subnet": {
                                 "id": "[variables('subnetRef')]"
                             },
@@ -239,25 +225,20 @@
 
                 "enableAcceleratedNetworking": false,
                 "enableIPForwarding": false,
-                "networkSecurityGroup": {
-                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_01_name'))]"
-                },
                 "primary": true,
                 "tapConfigurations": []
             },
             "copy": {
                 "name" : "loop_nic_creation",
                 "count": "[parameters('Number_Of_VM')]"
-            },
-            "dependsOn": [
-                "[resourceId('Microsoft.Network/publicIPAddresses', concat(parameters('Region_Code'),parameters('Service_ShortName'),'vm0',copyIndex(parameters('VMstart')),'-pip'))]"
-            ]
+            }
+            
         },
         {
             "condition": "[equals(parameters('VMOSType'), 'Linux')]",
             "comments": " ",
             "type": "Microsoft.Network/networkInterfaces",
-            "name": "[concat(parameters('Region_Code'),parameters('Service_ShortName'),'lvm0',copyIndex(parameters('VMstart')),'-nic')]",
+            "name": "[concat(parameters('Region_Code'),parameters('Service_ShortName'),'l0',copyIndex(parameters('VMstart')),'-nic')]",
             "apiVersion": "2018-08-01",
             "location": "[variables('location')]",
             "tags": {},
@@ -270,9 +251,6 @@
                         "properties": {
                             
                             "privateIPAllocationMethod": "Dynamic",
-                            "publicIPAddress": {
-                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', concat(parameters('Region_Code'),parameters('Service_ShortName'),'lvm0',copyIndex(parameters('VMstart')),'-pip'))]"
-                            },
                             "subnet": {
                                 "id": "[variables('subnetRef')]"
                             },
@@ -284,70 +262,15 @@
 
                 "enableAcceleratedNetworking": false,
                 "enableIPForwarding": false,
-                "networkSecurityGroup": {
-                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_01_name'))]"
-                },
                 "primary": true,
                 "tapConfigurations": []
             },
             "copy": {
                 "name" : "loop_nic_creation",
                 "count": "[parameters('Number_Of_VM')]"
-            },
-            "dependsOn": [
-                "[resourceId('Microsoft.Network/publicIPAddresses', concat(parameters('Region_Code'),parameters('Service_ShortName'),'lvm0',copyIndex(parameters('VMstart')),'-pip'))]"
-            ]
-        },
-        {
-            "condition": "[equals(parameters('VMOSType'), 'Windows')]",
-            "comments": " ",
-            "type": "Microsoft.Network/publicIPAddresses",
-            "sku": {
-                "name": "Basic",
-                "tier": "Regional"
-            },
-            "name": "[concat(parameters('Region_Code'),parameters('Service_ShortName'),'vm0',copyIndex(parameters('VMstart')),'-pip')]",
-            "apiVersion": "2018-08-01",
-            "location": "[variables('location')]",
-            "tags": {},
-            "scale": null,
-            "properties": {
-                "publicIPAddressVersion": "IPv4",
-                "publicIPAllocationMethod": "Dynamic",
-                "idleTimeoutInMinutes": 4,
-                "ipTags": []
-            },
-            "copy": {
-                "name": "loop_pip_creation",
-                "count": "[parameters('Number_Of_VM')]"
-            },
-            "dependsOn": []
-        },
-        {
-            "condition": "[equals(parameters('VMOSType'), 'Linux')]",
-            "comments": " ",
-            "type": "Microsoft.Network/publicIPAddresses",
-            "sku": {
-                "name": "Basic",
-                "tier": "Regional"
-            },
-            "name": "[concat(parameters('Region_Code'),parameters('Service_ShortName'),'lvm0',copyIndex(parameters('VMstart')),'-pip')]",
-            "apiVersion": "2018-08-01",
-            "location": "[variables('location')]",
-            "tags": {},
-            "scale": null,
-            "properties": {
-                "publicIPAddressVersion": "IPv4",
-                "publicIPAllocationMethod": "Dynamic",
-                "idleTimeoutInMinutes": 4,
-                "ipTags": []
-            },
-            "copy": {
-                "name": "loop_pip_creation",
-                "count": "[parameters('Number_Of_VM')]"
-            },
-            "dependsOn": []
+            }
+            
         }
-
+        
     ]
 }
