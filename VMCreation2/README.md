@@ -6,3 +6,17 @@
 This template allows you to create a Windows / Linux-based VM.
 
 Prerequisite : VNET, SUBNETs and NSG are created prior using this ARM template. 
+
+
+## Deploy
+
+1. Using Azure CLI
+
+  https://azure.microsoft.com/en-us/documentation/articles/xplat-cli-azure-resource-manager/
+
+2. Using Powershell
+
+  https://azure.microsoft.com/en-us/documentation/articles/powershell-azure-resource-manager/
+
+3. Using Azure Portal
+  Click the "Deploy to Azure" button.
