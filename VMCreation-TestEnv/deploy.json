@@ -2,21 +2,34 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        
         "ResourceGroupName_of_VNET": {
-            "defaultValue": "RG",
+            "defaultValue": "itelli-Management-test-ASE-01-rg",
             "type": "string",
             "metadata": {
                 "description": "Name of the ResourceGroup with the VNET"
             }
-        },
-        "Region_Code": {
-            "defaultValue": "ASE",
-            "type": "String"
+        },    
+        "Customer_Code": {
+            "defaultValue": "AKJ",
+            "type": "String",
+            "maxLength": "5"
         },
         "Service_ShortName": {
             "defaultValue": "HANA",
-            "type": "String"
+            "type": "String",
+            "maxLength": "5"
+        },
+        "Environment": {
+            "defaultValue": "s",
+            "type": "String",
+            "metadata": {
+            "description": "Example: p- Production, s- Sandbox, d- Development, q- Quality, r- Pre-Prod"},
+            "allowedValues": [
+                "p",
+                "d",
+                "s",
+                "q",
+                "r"]
         },
         "Number_Of_VM": {
             "type": "int",
@@ -43,7 +56,7 @@
                 "metadata": {
                     "description": "VM T-Shirt Szie"
                 },
-                "defaultValue": "Standard_D2s_v3",
+                "defaultValue": "Standard_B1ms",
                 "allowedValues": [
                     "Standard_B1ms",
                     "Standard_B2ms"]
@@ -66,13 +79,6 @@
                     "Linux"
                 ]
         },
-        "ImageSubscriptionID":{
-            "type": "string",
-                "metadata": {
-                    "description": "Enter the subscription ID where your golden image is located"
-                },
-                "defaultValue": "xxxxx-xxxxx-xxxxx"
-        },
         "ImageDefination":{
             "type": "string",
                 "metadata": {
@@ -93,13 +99,14 @@
                 "defaultValue": "1.0.0"
         },
         "VirtualNetworkName": {
-            "defaultValue": "VNET",
+            "defaultValue": "itelli-ASE-TestCentralHub-10.164.52.0_24-vnet",
             "type": "string"
         },
         "subnetName": {
-            "defaultValue": "SUBNET",
+            "defaultValue": "Management-10.164.52.64_26-subnet",
             "type": "string"
-        }    },
+        }    
+    },
     "variables": {
         "vnetId": "[concat(variables('subID'),'/resourceGroups/',parameters('ResourceGroupName_of_VNET'),'/providers/Microsoft.Network/virtualNetworks/',parameters('VirtualNetworkName'))]",
         "subnetRef": "[concat(variables('vnetId'), '/subnets/', parameters('subnetName'))]",
@@ -111,14 +118,14 @@
             "condition": "[equals(parameters('VMOSType'), 'Windows')]",
             "comments": "Create VirtualMachines",
             "type": "Microsoft.Compute/virtualMachines",
-            "name": "[concat(parameters('Region_Code'),parameters('Service_ShortName'),'w0', copyIndex(parameters('VMstart')))]",
+            "name": "[concat(parameters('Customer_Code'),parameters('Service_ShortName'),parameters('Environment'),if(lessOrEquals(parameters('VMstart'),9), 'w0', 'w' ), copyIndex(parameters('VMstart')))]",
             "apiVersion": "2018-06-01",
             "location": "[variables('location')]",
             "tags": {
-                "Environment": "Test",
+                "Environment": "[parameters('Environment')]",
                 "Release": "[parameters('ImageVersion')]",
-                "Alias": "[concat(parameters('Region_Code'),parameters('Service_ShortName'),'w0', copyIndex(parameters('VMstart')))]"
-             
+                "Alias": "[concat(parameters('Customer_Code'),parameters('Service_ShortName'),parameters('Environment'),if(lessOrEquals(parameters('VMstart'),9), 'w0', 'w' ), copyIndex(parameters('VMstart')))]",
+                "CreatedBy": "os-my-gms-dcs-cloud@itelligence.com.my"
             },
             "scale": null,
             "properties": {
@@ -144,18 +151,24 @@
                         }
                     ],
                     "imageReference": {
-                    "id": "[concat('/subscriptions/',parameters('ImageSubscriptionID'),'/resourceGroups/itelli-GOLDENIMAGE-test-ASE-01-rg/providers/Microsoft.Compute/galleries/imagegallery/images/',parameters('ImageDefination'),'/versions/',parameters('ImageVersion'))]"
+                    "id": "[concat('/subscriptions/253d053a-bc0b-4631-ad8d-35b5627b44bc/resourceGroups/itelli-GOLDENIMAGE-test-ASE-01-rg/providers/Microsoft.Compute/galleries/imagegallery/images/',parameters('ImageDefination'),'/versions/',parameters('ImageVersion'))]"
                     }
                 },
                 "osProfile": {
-                    "computerName": "[concat(parameters('Region_Code'),parameters('Service_ShortName'),'w0', copyIndex(parameters('VMstart')))]",
+                    "computerName": "[concat(parameters('Customer_Code'),parameters('Service_ShortName'),parameters('Environment'),if(lessOrEquals(parameters('VMstart'),9), 'w0', 'w' ), copyIndex(parameters('VMstart')))]",
                     "adminUsername": "[parameters('VMAdminID')]",
                     "adminPassword": "[parameters('VMPassword')]"    
+                },
+                "diagnosticsProfile": {
+                    "bootDiagnostics": {
+                        "enabled": true,
+                        "storageUri": "[concat('https://','itellitestcentralhub01','.blob.core.windows.net/')]"
+                    }
                 },
                 "networkProfile": {
                     "networkInterfaces": [
                         {
-                            "id": "[resourceId('Microsoft.Network/networkInterfaces', concat(parameters('Region_Code'),parameters('Service_ShortName'),'w0',copyIndex(parameters('VMstart')),'-nic'))]"
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', concat(parameters('Customer_Code'),parameters('Service_ShortName'),parameters('Environment'),if(lessOrEquals(parameters('VMstart'),9), 'w0', 'w' ),copyIndex(parameters('VMstart')),'-nic'))]"
                         }
                     ]
                 }
@@ -166,20 +179,21 @@
 
             },
             "dependsOn": [
-                "[resourceId('Microsoft.Network/networkInterfaces', concat(parameters('Region_Code'),parameters('Service_ShortName'),'w0',copyIndex(parameters('VMstart')),'-nic'))]"
+                "[resourceId('Microsoft.Network/networkInterfaces', concat(parameters('Customer_Code'),parameters('Service_ShortName'),parameters('Environment'),if(lessOrEquals(parameters('VMstart'),9), 'w0', 'w' ),copyIndex(parameters('VMstart')),'-nic'))]"
             ]
         },
         {
             "condition": "[equals(parameters('VMOSType'), 'Linux')]",
             "comments": "Create VirtualMachines",
             "type": "Microsoft.Compute/virtualMachines",
-            "name": "[concat(parameters('Region_Code'),parameters('Service_ShortName'),'l0', copyIndex(parameters('VMstart')))]",
+            "name": "[concat(parameters('Customer_Code'),parameters('Service_ShortName'),parameters('Environment'),if(lessOrEquals(parameters('VMstart'),9), 'l0', 'l' ), copyIndex(parameters('VMstart')))]",
             "apiVersion": "2018-06-01",
             "location": "[variables('location')]",
             "tags": {
-                "Environment": "test",
+                "Environment": "[parameters('Environment')]",
                 "Release": "[parameters('ImageVersion')]",
-                "Alias": "[concat(parameters('Region_Code'),parameters('Service_ShortName'),'l0', copyIndex(parameters('VMstart')))]"
+                "Alias": "[concat(parameters('Customer_Code'),parameters('Service_ShortName'),parameters('Environment'),if(lessOrEquals(parameters('VMstart'),9), 'l0', 'l' ), copyIndex(parameters('VMstart')))]",
+                "CreatedBy": "os-my-gms-dcs-cloud@itelligence.com.my"
             },
             "scale": null,
             "properties": {
@@ -195,18 +209,24 @@
                         "diskSizeGB": 64
                     },
                 "imageReference": {
-                    "id": "[concat('/subscriptions/',parameters('ImageSubscriptionID'),'/resourceGroups/itelli-GOLDENIMAGE-test-ASE-01-rg/providers/Microsoft.Compute/galleries/imagegallery/images/',parameters('ImageDefination'),'/versions/',parameters('ImageVersion'))]"
+                    "id": "[concat('/subscriptions/253d053a-bc0b-4631-ad8d-35b5627b44bc/resourceGroups/itelli-GOLDENIMAGE-test-ASE-01-rg/providers/Microsoft.Compute/galleries/imagegallery/images/',parameters('ImageDefination'),'/versions/',parameters('ImageVersion'))]"
                     }
                 },
                 "osProfile": {
-                    "computerName": "[concat(parameters('Region_Code'),parameters('Service_ShortName'),'l0', copyIndex(parameters('VMstart')))]",
+                    "computerName": "[concat(parameters('Customer_Code'),parameters('Service_ShortName'),parameters('Environment'),if(lessOrEquals(parameters('VMstart'),9), 'l0', 'l' ), copyIndex(parameters('VMstart')))]",
                     "adminUsername": "[parameters('VMAdminID')]",
                     "adminPassword": "[parameters('VMPassword')]"    
+                },
+                "diagnosticsProfile": {
+                    "bootDiagnostics": {
+                        "enabled": true,
+                        "storageUri": "[concat('https://','itellitestcentralhub01','.blob.core.windows.net/')]"
+                    }
                 },
                 "networkProfile": {
                     "networkInterfaces": [
                         {
-                            "id": "[resourceId('Microsoft.Network/networkInterfaces', concat(parameters('Region_Code'),parameters('Service_ShortName'),'l0',copyIndex(parameters('VMstart')),'-nic'))]"
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', concat(parameters('Customer_Code'),parameters('Service_ShortName'),parameters('Environment'),if(lessOrEquals(parameters('VMstart'),9), 'l0', 'l' ),copyIndex(parameters('VMstart')),'-nic'))]"
                         }
                     ]
                 }
@@ -216,14 +236,14 @@
                 "count": "[parameters('Number_Of_VM')]"
             },
             "dependsOn": [
-                "[resourceId('Microsoft.Network/networkInterfaces', concat(parameters('Region_Code'),parameters('Service_ShortName'),'l0',copyIndex(parameters('VMstart')),'-nic'))]"
+                "[resourceId('Microsoft.Network/networkInterfaces', concat(parameters('Customer_Code'),parameters('Service_ShortName'),parameters('Environment'),if(lessOrEquals(parameters('VMstart'),9), 'l0', 'l' ),copyIndex(parameters('VMstart')),'-nic'))]"
             ]
         },
         {
             "condition": "[equals(parameters('VMOSType'), 'Windows')]",
             "comments": " ",
             "type": "Microsoft.Network/networkInterfaces",
-            "name": "[concat(parameters('Region_Code'),parameters('Service_ShortName'),'w0',copyIndex(parameters('VMstart')),'-nic')]",
+            "name": "[concat(parameters('Customer_Code'),parameters('Service_ShortName'),parameters('Environment'),if(lessOrEquals(parameters('VMstart'),9), 'w0', 'w'),copyIndex(parameters('VMstart')),'-nic')]",
             "apiVersion": "2018-08-01",
             "location": "[variables('location')]",
             "tags": {},
@@ -259,7 +279,7 @@
             "condition": "[equals(parameters('VMOSType'), 'Linux')]",
             "comments": " ",
             "type": "Microsoft.Network/networkInterfaces",
-            "name": "[concat(parameters('Region_Code'),parameters('Service_ShortName'),'l0',copyIndex(parameters('VMstart')),'-nic')]",
+            "name": "[concat(parameters('Customer_Code'),parameters('Service_ShortName'),parameters('Environment'),if(lessOrEquals(parameters('VMstart'),9), 'l0', 'l' ),copyIndex(parameters('VMstart')),'-nic')]",
             "apiVersion": "2018-08-01",
             "location": "[variables('location')]",
             "tags": {},
@@ -292,6 +312,5 @@
             }
             
         }
-        
     ]
 }
