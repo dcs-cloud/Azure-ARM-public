@@ -1,15 +1,12 @@
-# Deploy the base for a subscription
+# Deploy a VM into Azure
 
-<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fdcs-cloud%2FARM-template%2Fmaster%2FBaseCreation-CUST%2Fazuredeploy.json" target="_blank">
-    <img src="http://azuredeploy.net/deploybutton.png"/>
-</a>
+[![Deploy to Azure](http://azuredeploy.net/deploybutton.png)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fdcs-cloud%2Fpublic-ARMtemplate%2Fmaster%2FVMCreation-Cust2%2Fazuredeploy.json)
 
-<a href="http://armviz.io/#/?load=https%3A%2F%2Fraw.githubusercontent.com%2Fdcs-cloud%2FARM-template%2Fmaster%2FBaseCreation-CUST%2Fazuredeploy.json" target="_blank">
-    <img src="http://armviz.io/visualizebutton.png"/>
-</a>
 
-This template allows you to create the base of the subscription including VNET and SUBNETS. 
-Kindly refer to the Azure IP Address file in the SharePoint to get the subnet range and netmask allocated for the subscription respectively.
+This template allows you to create a Windows / Linux-based VM in Customer Environment.
+
+Prerequisite : VNET, SUBNETs and NSG are created prior using this ARM template. 
+
 
 ## Deploy
 
