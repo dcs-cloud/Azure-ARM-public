@@ -3,7 +3,7 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "ResourceGroupName_of_VNET": {
-            "defaultValue": "itelli-Management-prod-ASE-01-rg",
+            "defaultValue": "",
             "type": "string",
             "metadata": {
                 "description": "Name of the ResourceGroup with the VNET"
@@ -98,11 +98,11 @@
                 "defaultValue": "1.0.0"
         },
         "VirtualNetworkName": {
-            "defaultValue": "itelli-ASE-CentralHub-10.164.48.0_22-vnet",
+            "defaultValue": "",
             "type": "string"
         },
         "subnetName": {
-            "defaultValue": "Management-10.164.49.0_24-subnet",
+            "defaultValue": "",
             "type": "string"
         }    
     },
