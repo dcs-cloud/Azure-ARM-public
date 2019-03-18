@@ -3,7 +3,7 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "ResourceGroupName_of_VNET": {
-            "defaultValue": "CustomerB-Hosting-test-JPE-01-rg",
+            "defaultValue": "",
             "type": "string",
             "metadata": {
                 "description": "Name of the ResourceGroup with the VNET"
@@ -261,7 +261,7 @@
                     }
                 ],
 
-                "enableAcceleratedNetworking": false,
+                "enableAcceleratedNetworking": true,
                 "enableIPForwarding": false,
                 "primary": true,
                 "tapConfigurations": []
@@ -298,7 +298,7 @@
                     }
                 ],
 
-                "enableAcceleratedNetworking": false,
+                "enableAcceleratedNetworking": true,
                 "enableIPForwarding": false,
                 "primary": true,
                 "tapConfigurations": []
