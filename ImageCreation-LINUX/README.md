@@ -1,6 +1,6 @@
 # Create Image from managed disks
 
-[![Deploy to Azure](http://azuredeploy.net/deploybutton.png)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fdcs-cloud%2Fpublic-ARMtemplate%2Fmaster%2FImageCreation-LINUX%2Fdeploy.json)
+[![Deploy to Azure](http://azuredeploy.net/deploybutton.png)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fdcs-cloud%2Fpublic-ARMtemplate%2Fmaster%2FImageCreation-LINUX%2Fazuredeploy.json)
 
 
 This template allows you to create Azure image for Linux
