@@ -1,6 +1,6 @@
 # Clone managed disks
 
-[![Deploy to Azure](http://azuredeploy.net/deploybutton.png)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fdcs-cloud%2Fpublic-ARMtemplate%2Fmaster%2FRENAMEmanagedDisk%2Fazuredeploy.json)
+[![Deploy to Azure](http://azuredeploy.net/deploybutton.png)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fdcs-cloud%2Fpublic-ARMtemplate%2Fmaster%2FCLONEmanagedDisk%2Fazuredeploy.json)
 
 
 This template allows you to clone the managed disk. 
