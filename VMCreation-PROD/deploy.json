@@ -139,16 +139,6 @@
                         "createOption": "FromImage",
                         "diskSizeGB": 128
                     },
-                    "dataDisks": [
-                        {
-                        "lun": 1,
-                        "managedDisk": {
-                            "storageAccountType": "[parameters('DiskType')]"
-                        },
-                        "createOption": "FromImage",
-                        "diskSizeGB": 5
-                        }
-                    ],
                     "imageReference": {
                     "id": "[concat('/subscriptions/253d053a-bc0b-4631-ad8d-35b5627b44bc/resourceGroups/itelli-GOLDENIMAGE-test-ASE-01-rg/providers/Microsoft.Compute/galleries/imagegallery/images/',parameters('ImageDefination'),'/versions/',parameters('ImageVersion'))]"
                     }
