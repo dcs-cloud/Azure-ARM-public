@@ -137,16 +137,6 @@
                         "createOption": "FromImage",
                         "diskSizeGB": 128
                     },
-                    "dataDisks": [
-                        {
-                        "lun": 1,
-                        "managedDisk": {
-                            "storageAccountType": "[parameters('DiskType')]"
-                        },
-                        "createOption": "FromImage",
-                        "diskSizeGB": 5
-                        }
-                    ],
                     "imageReference": {
                     "id": "[concat('/subscriptions/9319c26a-6e80-4aae-bd4b-6610cb73ca90/resourceGroups/CustomerB-GOLDENIMAGE-test-JPE-01-rg/providers/Microsoft.Compute/galleries/imagegallery/images/',parameters('ImageDefination'),'/versions/',parameters('ImageVersion'))]"
                     }
