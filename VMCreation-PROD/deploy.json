@@ -3,7 +3,7 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "ResourceGroupName_of_VNET": {
-            "defaultValue": "",
+            "defaultValue": "itelli-Management-prod-ASE-01-rg",
             "type": "string",
             "metadata": {
                 "description": "Name of the ResourceGroup with the VNET"
@@ -98,11 +98,11 @@
                 "defaultValue": "1.0.0"
         },
         "VirtualNetworkName": {
-            "defaultValue": "",
+            "defaultValue": "itelli-ASE-CentralHub-10.164.48.0_22-vnet",
             "type": "string"
         },
         "subnetName": {
-            "defaultValue": "",
+            "defaultValue": "Management-10.164.49.0_24-subnet",
             "type": "string"
         }    
     },
@@ -151,7 +151,7 @@
                 "diagnosticsProfile": {
                     "bootDiagnostics": {
                         "enabled": true,
-                        "storageUri": "[concat('https://','itellitestcentralhub01','.blob.core.windows.net/')]"
+                        "storageUri": "[concat('https://','itellimanagementprodase0','.blob.core.windows.net/')]"
                     }
                 },
                 "networkProfile": {
@@ -209,7 +209,7 @@
                 "diagnosticsProfile": {
                     "bootDiagnostics": {
                         "enabled": true,
-                        "storageUri": "[concat('https://','itellitestcentralhub01','.blob.core.windows.net/')]"
+                        "storageUri": "[concat('https://','itellimanagementprodase0','.blob.core.windows.net/')]"
                     }
                 },
                 "networkProfile": {
