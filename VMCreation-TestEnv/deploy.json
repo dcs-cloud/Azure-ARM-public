@@ -152,7 +152,7 @@
                 "diagnosticsProfile": {
                     "bootDiagnostics": {
                         "enabled": true,
-                        "storageUri": "[concat('https://','itellitestcentralhub01','.blob.core.windows.net/')]"
+                        "storageUri": "[concat('https://','itellitesthub01','.blob.core.windows.net/')]"
                     }
                 },
                 "networkProfile": {
@@ -210,7 +210,7 @@
                 "diagnosticsProfile": {
                     "bootDiagnostics": {
                         "enabled": true,
-                        "storageUri": "[concat('https://','itellitestcentralhub01','.blob.core.windows.net/')]"
+                        "storageUri": "[concat('https://','itellitesthub01','.blob.core.windows.net/')]"
                     }
                 },
                 "networkProfile": {
