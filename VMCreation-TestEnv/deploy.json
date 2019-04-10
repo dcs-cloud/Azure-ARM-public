@@ -10,12 +10,12 @@
             }
         },    
         "Customer_Code": {
-            "defaultValue": "AKJ",
+            "defaultValue": "",
             "type": "String",
             "maxLength": "5"
         },
         "Service_ShortName": {
-            "defaultValue": "HANA",
+            "defaultValue": "",
             "type": "String",
             "maxLength": "5"
         },
@@ -141,7 +141,7 @@
                         "diskSizeGB": 128
                     },
                     "imageReference": {
-                    "id": "[concat('/subscriptions/253d053a-bc0b-4631-ad8d-35b5627b44bc/resourceGroups/itelli-GOLDENIMAGE-test-ASE-01-rg/providers/Microsoft.Compute/galleries/imagegallery/images/',parameters('ImageDefination'),'/versions/',parameters('ImageVersion'))]"
+                    "id": "[concat(variables('subID'),'/resourceGroups/','itelli','-','GOLDENIMAGE','-','test','-',variables('location'),'-','01','-','rg','/providers/Microsoft.Compute/galleries/imagegallery/images/',parameters('ImageDefination'),'/versions/',parameters('ImageVersion'))]"  
                     }
                 },
                 "osProfile": {
@@ -199,7 +199,7 @@
                         "diskSizeGB": 64
                     },
                 "imageReference": {
-                    "id": "[concat('/subscriptions/253d053a-bc0b-4631-ad8d-35b5627b44bc/resourceGroups/itelli-GOLDENIMAGE-test-ASE-01-rg/providers/Microsoft.Compute/galleries/imagegallery/images/',parameters('ImageDefination'),'/versions/',parameters('ImageVersion'))]"
+                    "id": "[concat(variables('subID'),'/resourceGroups/','itelli','-','GOLDENIMAGE','-','test','-',variables('location'),'-','01','-','rg','/providers/Microsoft.Compute/galleries/imagegallery/images/',parameters('ImageDefination'),'/versions/',parameters('ImageVersion'))]"  
                     }
                 },
                 "osProfile": {
