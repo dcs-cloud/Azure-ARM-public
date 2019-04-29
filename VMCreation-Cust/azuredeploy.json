@@ -58,6 +58,10 @@
                 },
                 "defaultValue": "Standard_D2s_v3"
         },
+        "Blob_Name" : {
+            "defaultValue" : "nedspicehubstorage1",
+            "type": "string"
+        },
         "DiskType":{
             "type": "string",
                 "metadata": {
@@ -138,7 +142,7 @@
                         "diskSizeGB": 128
                     },
                     "imageReference": {
-                    "id": "[concat('/subscriptions/9319c26a-6e80-4aae-bd4b-6610cb73ca90/resourceGroups/CustomerB-GOLDENIMAGE-test-JPE-01-rg/providers/Microsoft.Compute/galleries/imagegallery/images/',parameters('ImageDefination'),'/versions/',parameters('ImageVersion'))]"
+                    "id": "[concat(variables('subID'),'/resourceGroups/','itelli','-','GOLDENIMAGE','-','prod','-',variables('location'),'-','01','-','rg','/providers/Microsoft.Compute/galleries/imagegallery/images/',parameters('ImageDefination'),'/versions/',parameters('ImageVersion'))]"
                     }
                 },
                 "osProfile": {
@@ -149,7 +153,7 @@
                 "diagnosticsProfile": {
                     "bootDiagnostics": {
                         "enabled": true,
-                        "storageUri": "[concat('https://','customerbhosting','.blob.core.windows.net/')]"
+                        "storageUri": "[concat('https://',parameters('Blob_Name'),'.blob.core.windows.net/')]"
                     }
                 },
                 "networkProfile": {
@@ -196,7 +200,7 @@
                         "diskSizeGB": 64
                     },
                 "imageReference": {
-                    "id": "[concat('/subscriptions/9319c26a-6e80-4aae-bd4b-6610cb73ca90/resourceGroups/CustomerB-GOLDENIMAGE-test-JPE-01-rg/providers/Microsoft.Compute/galleries/imagegallery/images/',parameters('ImageDefination'),'/versions/',parameters('ImageVersion'))]"
+                    "id": "[concat(variables('subID'),'/resourceGroups/','itelli','-','GOLDENIMAGE','-','prod','-',variables('location'),'-','01','-','rg','/providers/Microsoft.Compute/galleries/imagegallery/images/',parameters('ImageDefination'),'/versions/',parameters('ImageVersion'))]"
                     }
                 },
                 "osProfile": {
@@ -207,7 +211,7 @@
                 "diagnosticsProfile": {
                     "bootDiagnostics": {
                         "enabled": true,
-                        "storageUri": "[concat('https://','customerbhosting','.blob.core.windows.net/')]"
+                        "storageUri": "[concat('https://',parameters('Blob_Name'),'.blob.core.windows.net/')]"
                     }
                 },
                 "networkProfile": {
