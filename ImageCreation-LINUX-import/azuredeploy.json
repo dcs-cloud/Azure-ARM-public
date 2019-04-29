@@ -1,0 +1,81 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "images_Name": {
+            "defaultValue": "Win16-image-Jan2019",
+            "type": "string"
+        },
+        "OSDisk_Name": {
+            "defaultValue": "Win16-image-Jan2019_OSDisk",
+            "type": "string"
+        },
+        "Disk_size": {
+            "defaultValue": "64",
+            "type": "int"
+        },
+        "Exist": {
+            "defaultValue": "yes",
+            "AllowedValues" : [
+                "yes",
+                "no"
+            ],
+            "type": "string"
+        },
+        "Blob_Name" : {
+            "type": "string"
+        },
+        "VHD_folder" : {
+            "defaultValue": "goldenimage",
+            "type": "string"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.Compute/images",
+            "name": "[parameters('images_Name')]",
+            "apiVersion": "2018-06-01",
+            "location": "[resourceGroup().location]",
+            "scale": null,
+            "properties": {
+                "storageProfile": {
+                    "osDisk": {
+                        "osType": "Linux",
+                        "osState": "Generalized",
+                        "diskSizeGB": "[parameters('Disk_size')]",
+                        "managedDisk": {
+                            "id": "[resourceId('Microsoft.Compute/disks', parameters('OSDisk_Name'))]"
+                        },
+                        "caching": "ReadWrite",
+                        "storageAccountType": "Standard_LRS"
+                    },
+                    "zoneResilient": false
+                }
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Compute/disks', parameters('OSDisk_Name'))]"            ]
+        },
+        {
+            "condition": "[equals(parameters('Exist'), 'no')]",
+            "type": "Microsoft.Compute/disks",
+            "sku": {
+                "name": "Premium_LRS",
+                "tier": "Premium"
+            },
+            "name": "[parameters('OSDisk_Name')]",
+            "apiVersion": "2018-06-01",
+            "location": "[resourceGroup().location]",
+            "scale": null,
+            "properties": {
+                "creationData": {
+                    "createOption": "Import",
+                    "sourceUri": "[concat('https://', parameters('Blob_Name'),'.blob.core.windows.net/', parameters('VHD_folder'),'/', parameters('OSDisk_Name'),'.vhd')]"
+                    
+                },
+                "diskSizeGB": "[parameters('Disk_size')]"
+            },
+            "dependsOn": []
+        }
+    ]
+}
