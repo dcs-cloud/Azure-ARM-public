@@ -3,11 +3,11 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "images_Name": {
-            "defaultValue": "Win16-image-Jan2019",
+            "defaultValue": "SLES12SP4-image-Jan2019",
             "type": "string"
         },
         "OSDisk_Name": {
-            "defaultValue": "Win16-image-Jan2019_OSDisk",
+            "defaultValue": "SLES12SP4-image-Jan2019_OsDisk",
             "type": "string"
         },
         "Disk_size": {
@@ -15,14 +15,15 @@
             "type": "int"
         },
         "Exist": {
-            "defaultValue": "yes",
-            "AllowedValues" : [
+            "defaultValue": "no",
+            "allowedValues": [
                 "yes",
                 "no"
             ],
             "type": "string"
         },
         "Blob_Name" : {
+            "defaultValue" : "nedspicehubstorage1",
             "type": "string"
         },
         "VHD_folder" : {
@@ -60,8 +61,8 @@
             "condition": "[equals(parameters('Exist'), 'no')]",
             "type": "Microsoft.Compute/disks",
             "sku": {
-                "name": "Premium_LRS",
-                "tier": "Premium"
+                "name": "Standard_LRS",
+                "tier": "Standard"
             },
             "name": "[parameters('OSDisk_Name')]",
             "apiVersion": "2018-06-01",
@@ -71,7 +72,6 @@
                 "creationData": {
                     "createOption": "Import",
                     "sourceUri": "[concat('https://', parameters('Blob_Name'),'.blob.core.windows.net/', parameters('VHD_folder'),'/', parameters('OSDisk_Name'),'.vhd')]"
-                    
                 },
                 "diskSizeGB": "[parameters('Disk_size')]"
             },
