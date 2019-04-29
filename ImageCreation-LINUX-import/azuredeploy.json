@@ -23,7 +23,7 @@
             "type": "string"
         },
         "Blob_Name" : {
-            "defaultValue" : "nedspicehubstorage1",
+            "defaultValue" : "blobname01",
             "type": "string"
         },
         "VHD_folder" : {
@@ -71,7 +71,7 @@
             "properties": {
                 "creationData": {
                     "createOption": "Import",
-                    "vhdUri": "[concat('https://', parameters('Blob_Name'),'.blob.core.windows.net/', parameters('VHD_folder'),'/', parameters('OSDisk_Name'),'.vhd')]" 
+                    "sourceUri": "[concat('https://', parameters('Blob_Name'),'.blob.core.windows.net/', parameters('VHD_folder'),'/', parameters('OSDisk_Name'),'.vhd')]" 
                 },
                 "diskSizeGB": "[parameters('Disk_size')]"
             },
