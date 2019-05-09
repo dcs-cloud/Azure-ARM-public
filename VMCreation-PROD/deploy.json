@@ -138,7 +138,7 @@
                         "diskSizeGB": 128
                     },
                     "imageReference": {
-                    "id": "[concat(variables('subID'),'/resourceGroups/','itelli','-','GOLDENIMAGE','-','prod','-',variables('location'),'-','01','-','rg','/providers/Microsoft.Compute/galleries/imagegallery/images/',parameters('ImageDefination'),'/versions/',parameters('ImageVersion'))]"
+                    "id": "[concat(variables('subID'),'/resourceGroups/','itelli','-','GOLDENIMAGE','-','prod','-','ASE','-','01','-','rg','/providers/Microsoft.Compute/galleries/imagegallery/images/',parameters('ImageDefination'),'/versions/',parameters('ImageVersion'))]"
                     }
                 },
                 "osProfile": {
@@ -196,7 +196,7 @@
                         "diskSizeGB": 64
                     },
                 "imageReference": {
-                    "id": "[concat(variables('subID'),'/resourceGroups/','itelli','-','GOLDENIMAGE','-','prod','-',variables('location'),'-','01','-','rg','/providers/Microsoft.Compute/galleries/imagegallery/images/',parameters('ImageDefination'),'/versions/',parameters('ImageVersion'))]"
+                    "id": "[concat(variables('subID'),'/resourceGroups/','itelli','-','GOLDENIMAGE','-','prod','-','ASE','-','01','-','rg','/providers/Microsoft.Compute/galleries/imagegallery/images/',parameters('ImageDefination'),'/versions/',parameters('ImageVersion'))]"
                     }
                 },
                 "osProfile": {
