@@ -3,25 +3,25 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "ResourceGroupName_of_VNET": {
-            "defaultValue": "itelli-Management-prod-ASE-01-rg",
+            "defaultValue": "xxx",
             "type": "string",
             "metadata": {
-                "description": "Name of the ResourceGroup with the VNET"
+                "description": "Name of the ResourceGroup containing the VNET"
             }
         },    
-        "Company_Abbr": {
+        "Customer_Code": {
             "defaultValue": "it",
-            "type": "String",
-            "maxLength": "5"
+            "type": "string",
+            "maxLength": 5
         },
         "Service_ShortName": {
-            "defaultValue": "DNS",
-            "type": "String",
-            "maxLength": "5"
+            "defaultValue": "SAP",
+            "type": "string",
+            "maxLength": 5
         },
         "Environment": {
             "defaultValue": "p",
-            "type": "String",
+            "type": "string",
             "metadata": {
             "description": "Example: p- Production, s- Sandbox, d- Development, q- Quality, r- Pre-Prod"},
             "allowedValues": [
@@ -39,24 +39,64 @@
         "VMstart": {
             "type": "int",
              "metadata": {
-            "description": "Enter the starting sequence number of VM to be created"}
+            "description": "Last digit number 1, 2... Example: itSAP1 or itSAP2 "}
         },
         "VMAdminID": {
+			"defaultValue": "itadmin",
             "type": "string",
             "metadata": {
                 "description": "Enter the Admin ID"}
         },
         "VMPassword": {
             "type": "securestring",
+            "minLength": 14,
             "metadata": {
-                "description": "Password must be between 12 and 72 characters and have 3 of the following: 1 lower case, 1 upper case, 1 number and 1 special character"}
+                "description": "Password must be between 14 and 72 characters and have 3 of the following: 1 lower case, 1 upper case, 1 number and 1 special character"}
         },
         "VMSize":{
             "type": "string",
                 "metadata": {
                     "description": "VM T-Shirt Szie"
                 },
-                "defaultValue": "Standard_D2s_v3"
+                "defaultValue": "Standard_D2s_v3",
+                "allowedValues": [
+                        "Standard_D1_v2",
+                        "Standard_D2_v2",
+                        "Standard_D3_v2",
+                        "Standard_D4_v2",
+                        "Standard_D5_v2",
+                        "Standard_D11_v2",
+                        "Standard_D12_v2",
+                        "Standard_D13_v2",
+                        "Standard_D14_v2",
+                        "Standard_D15_v2",
+                        "Standard_D2s_v3",
+                        "Standard_D4_v3",
+                        "Standard_D8_v3",
+                        "Standard_D16_v3",
+                        "Standard_D32_v3",
+                        "Standard_D64_v3",
+                        "Standard_E2_v3",
+                        "Standard_E4_v3",
+                        "Standard_E8_v3",
+                        "Standard_E16_v3",
+                        "Standard_E32_v3",
+                        "Standard_E64_v3"
+                ]
+        },
+        "Blob_Name" : {
+            "defaultValue" : "Enter_Your_Blob",
+            "metadata": {
+            "description": "Blob for bootDiagnostics"
+            },
+            "type": "string"
+        },
+        "GoldenImage_RG" : {
+            "defaultValue" : "",
+            "metadata": {
+            "description": "Resource Group of the GoldenImage gallery"
+            },
+            "type": "string"
         },
         "DiskType":{
             "type": "string",
@@ -70,10 +110,10 @@
                 "metadata": {
                     "description": "VM OS Type"
                 },
-                "defaultValue": "Windows",
+                "defaultValue": "Linux",
                 "allowedValues": [
-                    "Windows",
-                    "Linux"
+                    "Linux",
+                    "Windows"
                 ]
         },
         "ImageDefination":{
@@ -81,7 +121,7 @@
                 "metadata": {
                     "description": "Enter the Image Defination to be used"
                 },
-                "defaultValue": "Win2012R2ImageDefinition",
+                "defaultValue": "SLES12SP4ImageDefinition",
                 "allowedValues": [
                     "Win2012R2ImageDefinition",
                     "Win2016ImageDefinition",
@@ -110,18 +150,19 @@
         "subID": "[subscription().id]",
         "location": "[resourceGroup().location]"
     },
+    
     "resources": [
         {
             "condition": "[equals(parameters('VMOSType'), 'Windows')]",
             "comments": "Create VirtualMachines",
             "type": "Microsoft.Compute/virtualMachines",
-            "name": "[concat(parameters('Company_Abbr'),parameters('Service_ShortName'),parameters('Environment'),if(lessOrEquals(parameters('VMstart'),9), 'w0', 'w' ), copyIndex(parameters('VMstart')))]",
+            "name": "[concat(parameters('Customer_Code'),parameters('Service_ShortName'),parameters('Environment'),if(lessOrEquals(parameters('VMstart'),9), 'w0', 'w' ), copyIndex(parameters('VMstart')))]",
             "apiVersion": "2018-06-01",
             "location": "[variables('location')]",
             "tags": {
                 "Environment": "[parameters('Environment')]",
                 "Release": "[parameters('ImageVersion')]",
-                "Alias": "[concat(parameters('Company_Abbr'),parameters('Service_ShortName'),parameters('Environment'),if(lessOrEquals(parameters('VMstart'),9), 'w0', 'w' ), copyIndex(parameters('VMstart')))]",
+                "Alias": "[concat(parameters('Customer_Code'),parameters('Service_ShortName'),parameters('Environment'),if(lessOrEquals(parameters('VMstart'),9), 'w0', 'w' ), copyIndex(parameters('VMstart')))]",
                 "CreatedBy": "os-my-gms-dcs-cloud@itelligence.com.my"
             },
             "scale": null,
@@ -134,28 +175,27 @@
                         "managedDisk": {
                             "storageAccountType": "[parameters('DiskType')]"
                         },
-                        "createOption": "FromImage",
-                        "diskSizeGB": 128
+                        "createOption": "FromImage"
                     },
                     "imageReference": {
-                    "id": "[concat(variables('subID'),'/resourceGroups/','itelli','-','GOLDENIMAGE','-','prod','-','ASE','-','01','-','rg','/providers/Microsoft.Compute/galleries/imagegallery/images/',parameters('ImageDefination'),'/versions/',parameters('ImageVersion'))]"
+                        "id": "[concat(variables('subID'),'/resourceGroups/',parameters('GoldenImage_RG'),'/providers/Microsoft.Compute/galleries/goldengallery/images/',parameters('ImageDefination'),'/versions/',parameters('ImageVersion'))]"
                     }
                 },
                 "osProfile": {
-                    "computerName": "[concat(parameters('Company_Abbr'),parameters('Service_ShortName'),parameters('Environment'),if(lessOrEquals(parameters('VMstart'),9), 'w0', 'w' ), copyIndex(parameters('VMstart')))]",
+                    "computerName": "[concat(parameters('Customer_Code'),parameters('Service_ShortName'),parameters('Environment'),if(lessOrEquals(parameters('VMstart'),9), 'w0', 'w' ), copyIndex(parameters('VMstart')))]",
                     "adminUsername": "[parameters('VMAdminID')]",
                     "adminPassword": "[parameters('VMPassword')]"    
                 },
                 "diagnosticsProfile": {
                     "bootDiagnostics": {
                         "enabled": true,
-                        "storageUri": "[concat('https://','itellimanagementprodase0','.blob.core.windows.net/')]"
+                        "storageUri": "[concat('https://',parameters('Blob_Name'),'.blob.core.windows.net/')]"
                     }
                 },
                 "networkProfile": {
                     "networkInterfaces": [
                         {
-                            "id": "[resourceId('Microsoft.Network/networkInterfaces', concat(parameters('Company_Abbr'),parameters('Service_ShortName'),parameters('Environment'),if(lessOrEquals(parameters('VMstart'),9), 'w0', 'w' ),copyIndex(parameters('VMstart')),'-nic'))]"
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', concat(parameters('Customer_Code'),parameters('Service_ShortName'),parameters('Environment'),if(lessOrEquals(parameters('VMstart'),9), 'w0', 'w' ),copyIndex(parameters('VMstart')),'-nic'))]"
                         }
                     ]
                 }
@@ -163,23 +203,22 @@
             "copy": {
                 "name": "loop_vm_creation",
                 "count": "[parameters('Number_Of_VM')]"
-
             },
             "dependsOn": [
-                "[resourceId('Microsoft.Network/networkInterfaces', concat(parameters('Company_Abbr'),parameters('Service_ShortName'),parameters('Environment'),if(lessOrEquals(parameters('VMstart'),9), 'w0', 'w' ),copyIndex(parameters('VMstart')),'-nic'))]"
+                "[resourceId('Microsoft.Network/networkInterfaces', concat(parameters('Customer_Code'),parameters('Service_ShortName'),parameters('Environment'),if(lessOrEquals(parameters('VMstart'),9), 'w0', 'w' ),copyIndex(parameters('VMstart')),'-nic'))]"
             ]
         },
         {
             "condition": "[equals(parameters('VMOSType'), 'Linux')]",
             "comments": "Create VirtualMachines",
             "type": "Microsoft.Compute/virtualMachines",
-            "name": "[concat(parameters('Company_Abbr'),parameters('Service_ShortName'),parameters('Environment'),if(lessOrEquals(parameters('VMstart'),9), 'l0', 'l' ), copyIndex(parameters('VMstart')))]",
+            "name": "[concat(parameters('Customer_Code'),parameters('Service_ShortName'),parameters('Environment'),if(lessOrEquals(parameters('VMstart'),9), 'l0', 'l' ), copyIndex(parameters('VMstart')))]",
             "apiVersion": "2018-06-01",
             "location": "[variables('location')]",
             "tags": {
                 "Environment": "[parameters('Environment')]",
                 "Release": "[parameters('ImageVersion')]",
-                "Alias": "[concat(parameters('Company_Abbr'),parameters('Service_ShortName'),parameters('Environment'),if(lessOrEquals(parameters('VMstart'),9), 'l0', 'l' ), copyIndex(parameters('VMstart')))]",
+                "Alias": "[concat(parameters('Customer_Code'),parameters('Service_ShortName'),parameters('Environment'),if(lessOrEquals(parameters('VMstart'),9), 'l0', 'l' ), copyIndex(parameters('VMstart')))]",
                 "CreatedBy": "os-my-gms-dcs-cloud@itelligence.com.my"
             },
             "scale": null,
@@ -192,28 +231,27 @@
                         "managedDisk": {
                             "storageAccountType": "[parameters('DiskType')]"
                         },
-                        "createOption": "FromImage",
-                        "diskSizeGB": 64
+                        "createOption": "FromImage"
                     },
-                "imageReference": {
-                    "id": "[concat(variables('subID'),'/resourceGroups/','itelli','-','GOLDENIMAGE','-','prod','-','ASE','-','01','-','rg','/providers/Microsoft.Compute/galleries/imagegallery/images/',parameters('ImageDefination'),'/versions/',parameters('ImageVersion'))]"
+                    "imageReference": {
+                        "id": "[concat(variables('subID'),'/resourceGroups/',parameters('GoldenImage_RG'),'/providers/Microsoft.Compute/galleries/goldengallery/images/',parameters('ImageDefination'),'/versions/',parameters('ImageVersion'))]"
                     }
                 },
                 "osProfile": {
-                    "computerName": "[concat(parameters('Company_Abbr'),parameters('Service_ShortName'),parameters('Environment'),if(lessOrEquals(parameters('VMstart'),9), 'l0', 'l' ), copyIndex(parameters('VMstart')))]",
+                    "computerName": "[concat(parameters('Customer_Code'),parameters('Service_ShortName'),parameters('Environment'),if(lessOrEquals(parameters('VMstart'),9), 'l0', 'l' ), copyIndex(parameters('VMstart')))]",
                     "adminUsername": "[parameters('VMAdminID')]",
                     "adminPassword": "[parameters('VMPassword')]"    
                 },
                 "diagnosticsProfile": {
                     "bootDiagnostics": {
                         "enabled": true,
-                        "storageUri": "[concat('https://','itellimanagementprodase0','.blob.core.windows.net/')]"
+                        "storageUri": "[concat('https://',parameters('Blob_Name'),'.blob.core.windows.net/')]"
                     }
                 },
                 "networkProfile": {
                     "networkInterfaces": [
                         {
-                            "id": "[resourceId('Microsoft.Network/networkInterfaces', concat(parameters('Company_Abbr'),parameters('Service_ShortName'),parameters('Environment'),if(lessOrEquals(parameters('VMstart'),9), 'l0', 'l' ),copyIndex(parameters('VMstart')),'-nic'))]"
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', concat(parameters('Customer_Code'),parameters('Service_ShortName'),parameters('Environment'),if(lessOrEquals(parameters('VMstart'),9), 'l0', 'l' ),copyIndex(parameters('VMstart')),'-nic'))]"
                         }
                     ]
                 }
@@ -223,14 +261,14 @@
                 "count": "[parameters('Number_Of_VM')]"
             },
             "dependsOn": [
-                "[resourceId('Microsoft.Network/networkInterfaces', concat(parameters('Company_Abbr'),parameters('Service_ShortName'),parameters('Environment'),if(lessOrEquals(parameters('VMstart'),9), 'l0', 'l' ),copyIndex(parameters('VMstart')),'-nic'))]"
+                "[resourceId('Microsoft.Network/networkInterfaces', concat(parameters('Customer_Code'),parameters('Service_ShortName'),parameters('Environment'),if(lessOrEquals(parameters('VMstart'),9), 'l0', 'l' ),copyIndex(parameters('VMstart')),'-nic'))]"
             ]
         },
         {
             "condition": "[equals(parameters('VMOSType'), 'Windows')]",
             "comments": " ",
             "type": "Microsoft.Network/networkInterfaces",
-            "name": "[concat(parameters('Company_Abbr'),parameters('Service_ShortName'),parameters('Environment'),if(lessOrEquals(parameters('VMstart'),9), 'w0', 'w'),copyIndex(parameters('VMstart')),'-nic')]",
+            "name": "[concat(parameters('Customer_Code'),parameters('Service_ShortName'),parameters('Environment'),if(lessOrEquals(parameters('VMstart'),9), 'w0', 'w'),copyIndex(parameters('VMstart')),'-nic')]",
             "apiVersion": "2018-08-01",
             "location": "[variables('location')]",
             "tags": {},
@@ -266,7 +304,7 @@
             "condition": "[equals(parameters('VMOSType'), 'Linux')]",
             "comments": " ",
             "type": "Microsoft.Network/networkInterfaces",
-            "name": "[concat(parameters('Company_Abbr'),parameters('Service_ShortName'),parameters('Environment'),if(lessOrEquals(parameters('VMstart'),9), 'l0', 'l' ),copyIndex(parameters('VMstart')),'-nic')]",
+            "name": "[concat(parameters('Customer_Code'),parameters('Service_ShortName'),parameters('Environment'),if(lessOrEquals(parameters('VMstart'),9), 'l0', 'l' ),copyIndex(parameters('VMstart')),'-nic')]",
             "apiVersion": "2018-08-01",
             "location": "[variables('location')]",
             "tags": {},
