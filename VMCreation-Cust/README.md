@@ -5,7 +5,8 @@
 
 This template allows you to create a Windows / Linux-based VM in Customer Environment.
 
-For more information for the paramters, kindly refer to the example screenshots (PNG files) attached.
+For more information about the paramters, kindly refer to the example screenshots (PNG files) attached 
+or by havering your mouse over the "i" button next to each parameters.
 
 Prerequisite : VNET, SUBNETs and NSG are created prior using this ARM template. 
 
