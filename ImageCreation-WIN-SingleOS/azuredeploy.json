@@ -39,7 +39,7 @@
                 }
             },
             "dependsOn": [
-                "[resourceId('Microsoft.Compute/disks', parameters('OSDisk_Name'))]",
+                "[resourceId('Microsoft.Compute/disks', parameters('OSDisk_Name'))]"
             ]
         },
         {
