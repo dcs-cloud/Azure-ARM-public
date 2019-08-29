@@ -42,7 +42,7 @@
             "description": "Last digit number 1, 2... Example: itSAP1 or itSAP2 "}
         },
         "VMAdminID": {
-			"defaultValue": "itadmin",
+			"defaultValue": "it.admin",
             "type": "string",
             "metadata": {
                 "description": "Enter the Admin ID"}
