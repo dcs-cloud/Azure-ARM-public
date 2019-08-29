@@ -43,6 +43,7 @@
         },
         "VMAdminID": {
             "type": "string",
+            "defaultValue": "it.admin",
             "metadata": {
                 "description": "Enter the Admin ID"}
         },
