@@ -91,13 +91,6 @@
             },
             "type": "string"
         },
-        "GoldenImage_RG" : {
-            "defaultValue" : "",
-            "metadata": {
-            "description": "Resource Group of the GoldenImage gallery"
-            },
-            "type": "string"
-        },
         "DiskType":{
             "type": "string",
                 "metadata": {
@@ -178,7 +171,7 @@
                         "createOption": "FromImage"
                     },
                     "imageReference": {
-                        "id": "[concat(variables('subID'),'/resourceGroups/',parameters('GoldenImage_RG'),'/providers/Microsoft.Compute/galleries/goldengallery/images/',parameters('ImageDefination'),'/versions/',parameters('ImageVersion'))]"
+                    "id": "[concat('/subscriptions/673b00ee-9ade-4e95-b27b-a72979967f8f/resourceGroups/itelli-GOLDENIMAGE-prod-ASE-01-rg/providers/Microsoft.Compute/galleries/imagegallery/images/',parameters('ImageDefination'),'/versions/',parameters('ImageVersion'))]"
                     }
                 },
                 "osProfile": {
@@ -234,7 +227,7 @@
                         "createOption": "FromImage"
                     },
                     "imageReference": {
-                        "id": "[concat(variables('subID'),'/resourceGroups/',parameters('GoldenImage_RG'),'/providers/Microsoft.Compute/galleries/goldengallery/images/',parameters('ImageDefination'),'/versions/',parameters('ImageVersion'))]"
+                    "id": "[concat('/subscriptions/673b00ee-9ade-4e95-b27b-a72979967f8f/resourceGroups/itelli-GOLDENIMAGE-prod-ASE-01-rg/providers/Microsoft.Compute/galleries/imagegallery/images/',parameters('ImageDefination'),'/versions/',parameters('ImageVersion'))]"
                     }
                 },
                 "osProfile": {
